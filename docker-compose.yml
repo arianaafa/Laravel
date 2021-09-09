@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+
+    composer:
+        image: composer
+        volumes:
+            - .:/app
+        working_dir: /app
+        command: composer install
+
+    php:
+        build: ./docker/php
+        image: php_composer
+        container_name: php_composer
+
+        links:
+            - db
+        ports:
+            - 9000:9000
+        command: php -S 0.0.0.0:9000 -t public/
+        volumes:
+            - .:/var/www
+
+    db:
+        image: postgres
+        restart: always
+        container_name: postgres
+        environment:
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: root
+            POSTGRES_DB: test
+        ports:
+            - 5432:5432
+
